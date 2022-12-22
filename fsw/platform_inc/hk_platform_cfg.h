@@ -54,7 +54,7 @@
  *       This parameter can be set to 0 or 1 only.
  */
 #define HK_DISCARD_INCOMPLETE_COMBO 0
-
+#ifndef CFE_EDS_ENABLED_BUILD
 /**
  *  \brief Maximum Number of HK Copy Table Entries
  *
@@ -64,8 +64,8 @@
  *  \par Limits
  *       The maximum size of this paramater is 8192
  */
-#define HK_COPY_TABLE_ENTRIES 128
-
+typedef HK_CopyTableEntry_t hk_copy_table_entry_t
+#endif
 /**
  *  \brief Number of bytes in the HK Memory Pool
  *
