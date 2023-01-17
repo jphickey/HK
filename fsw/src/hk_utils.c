@@ -44,8 +44,8 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void HK_ProcessIncomingHkData(const CFE_SB_Buffer_t *BufPtr)
 {
-    hk_copy_table_entry_t * StartOfCopyTable = HK_AppData.CopyTablePtr;
-    hk_copy_table_entry_t * CpyTblEntry      = NULL;
+    HK_CopyTableEntry_t * StartOfCopyTable = HK_AppData.CopyTablePtr;
+    HK_CopyTableEntry_t * CpyTblEntry      = NULL;
     hk_runtime_tbl_entry_t *StartOfRtTable   = HK_AppData.RuntimeTablePtr;
     hk_runtime_tbl_entry_t *RtTblEntry       = NULL;
     uint16                  Loop             = 0;
@@ -114,7 +114,7 @@ int32 HK_ValidateHkCopyTable(void *TblPtr)
 /* HK process new copy table                                       */
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-int32 HK_ProcessNewCopyTable(hk_copy_table_entry_t *CpyTblPtr, hk_runtime_tbl_entry_t *RtTblPtr)
+int32 HK_ProcessNewCopyTable(HK_CopyTableEntry_t *CpyTblPtr, hk_runtime_tbl_entry_t *RtTblPtr)
 {
     hk_copy_table_entry_t * StartOfCopyTable = NULL;
     hk_copy_table_entry_t * OuterCpyEntry    = NULL;
@@ -261,11 +261,11 @@ int32 HK_ProcessNewCopyTable(hk_copy_table_entry_t *CpyTblPtr, hk_runtime_tbl_en
 /* HK Tear down old copy table                                     */
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-int32 HK_TearDownOldCopyTable(hk_copy_table_entry_t *CpyTblPtr, hk_runtime_tbl_entry_t *RtTblPtr)
+int32 HK_TearDownOldCopyTable(HK_CopyTableEntry_t *CpyTblPtr, hk_runtime_tbl_entry_t *RtTblPtr)
 {
-    hk_copy_table_entry_t * StartOfCopyTable = NULL;
-    hk_copy_table_entry_t * OuterCpyEntry    = NULL;
-    hk_copy_table_entry_t * InnerDefEntry    = NULL;
+    HK_CopyTableEntry_t * StartOfCopyTable = NULL;
+    HK_CopyTableEntry_t * OuterCpyEntry    = NULL;
+    HK_CopyTableEntry_t * InnerDefEntry    = NULL;
     hk_runtime_tbl_entry_t *StartOfRtTable   = NULL;
     hk_runtime_tbl_entry_t *OuterRtEntry     = NULL;
     hk_runtime_tbl_entry_t *InnerRtEntry     = NULL;
@@ -585,8 +585,8 @@ int32 HK_CheckForMissingData(CFE_SB_MsgId_t OutPktToCheck, CFE_SB_MsgId_t *Missi
 {
     int32                   Loop             = 0;
     int32                   Status           = HK_NO_MISSING_DATA;
-    hk_copy_table_entry_t * StartOfCopyTable = HK_AppData.CopyTablePtr;
-    hk_copy_table_entry_t * CpyTblEntry      = NULL;
+    HK_CopyTableEntry_t * StartOfCopyTable = HK_AppData.CopyTablePtr;
+    HK_CopyTableEntry_t * CpyTblEntry      = NULL;
     hk_runtime_tbl_entry_t *StartOfRtTable   = HK_AppData.RuntimeTablePtr;
     hk_runtime_tbl_entry_t *RtTblEntry       = NULL;
 
@@ -620,8 +620,8 @@ int32 HK_CheckForMissingData(CFE_SB_MsgId_t OutPktToCheck, CFE_SB_MsgId_t *Missi
 void HK_SetFlagsToNotPresent(CFE_SB_MsgId_t OutPkt)
 {
     int32                   Loop             = 0;
-    hk_copy_table_entry_t * StartOfCopyTable = HK_AppData.CopyTablePtr;
-    hk_copy_table_entry_t * CpyTblEntry      = NULL;
+    HK_CopyTableEntry_t * StartOfCopyTable = HK_AppData.CopyTablePtr;
+    HK_CopyTableEntry_t * CpyTblEntry      = NULL;
     hk_runtime_tbl_entry_t *StartOfRtTable   = HK_AppData.RuntimeTablePtr;
     hk_runtime_tbl_entry_t *RtTblEntry       = NULL;
 

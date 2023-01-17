@@ -35,7 +35,9 @@
 
 /**  \brief HK Copy Table Entry Format
  */
-
+ #ifdef CFE_EDS_ENABLED_BUILD
+ #include "hk_eds_typedefs.h"
+ #else
 typedef struct
 {
     CFE_SB_MsgId_t InputMid;     /**< \brief MsgId of the input packet */
@@ -45,6 +47,7 @@ typedef struct
     uint16         NumBytes;     /**< \brief Number of data bytes to copy from input to output pkt */
 } hk_copy_table_entry_t;
 
+#endif
 /**  \brief HK Run-time Table Entry Format
  */
 typedef struct

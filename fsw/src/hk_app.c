@@ -134,7 +134,7 @@ int32 HK_AppInit(void)
     HK_AppData.RunStatus = CFE_ES_RunStatus_APP_RUN;
 
     /* Initialize housekeeping packet  */
-    CFE_MSG_Init(&HK_AppData.HkPacket.TlmHeader.Msg, CFE_SB_ValueToMsgId(HK_HK_TLM_MID), sizeof(HK_HkPacket_t));
+    CFE_MSG_Init(CFE_MSG_PTR(HK_AppData.HkPacket), CFE_SB_ValueToMsgId(HK_HK_TLM_MID), sizeof(HK_HkPacket_t));
 
     /* Register for event services...        */
     Status = CFE_EVS_Register(NULL, 0, CFE_EVS_EventFilter_BINARY);
@@ -224,7 +224,7 @@ int32 HK_TableInit(void)
 
     /* Register The HK Copy Table */
     Status = CFE_TBL_Register(&HK_AppData.CopyTableHandle, HK_COPY_TABLE_NAME,
-                              (sizeof(hk_copy_table_entry_t) * HK_COPY_TABLE_ENTRIES),
+                              (sizeof(HK_CopyTableEntry_t) * HK_COPY_TABLE_ENTRIES),
                               CFE_TBL_OPT_DBL_BUFFER | CFE_TBL_OPT_LOAD_DUMP, HK_ValidateHkCopyTable);
 
     if (Status != CFE_SUCCESS)
@@ -411,8 +411,8 @@ void HK_HousekeepingCmd(const CFE_MSG_CommandHeader_t *Msg)
     HK_AppData.HkPacket.MemPoolHandle       = HK_AppData.MemPoolHandle;
 
     /* Send housekeeping telemetry packet...        */
-    CFE_SB_TimeStampMsg(&HK_AppData.HkPacket.TlmHeader.Msg);
-    CFE_SB_TransmitMsg(&HK_AppData.HkPacket.TlmHeader.Msg, true);
+    CFE_SB_TimeStampMsg(CFE_MSG_PTR(HK_AppData.HkPacket));
+    CFE_SB_TransmitMsg(CFE_MSG_PTR(HK_AppData.HkPacket), true);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

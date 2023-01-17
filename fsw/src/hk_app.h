@@ -77,7 +77,7 @@ typedef struct
     CFE_TBL_Handle_t CopyTableHandle;    /**< \brief Copy Table handle */
     CFE_TBL_Handle_t RuntimeTableHandle; /**< \brief Run-time table handle */
 
-    hk_copy_table_entry_t * CopyTablePtr;    /**< \brief Ptr to copy table entry */
+    HK_CopyTableEntry_t * CopyTablePtr;    /**< \brief Ptr to copy table entry */
     hk_runtime_tbl_entry_t *RuntimeTablePtr; /**< \brief Ptr to run-time table entry */
 
     uint8 MemPoolBuffer[HK_NUM_BYTES_IN_MEM_POOL]; /**< \brief HK mempool buffer */

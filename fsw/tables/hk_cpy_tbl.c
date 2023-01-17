@@ -31,8 +31,9 @@
 #include "hk_msgids.h"
 #include "hk_tbldefs.h"
 #include "cfe_tbl_filedef.h"
+#include "cfe_sb_api_typedefs.h"
 
-hk_copy_table_entry_t HK_CopyTable[HK_COPY_TABLE_ENTRIES] = {
+HK_CopyTable_Array_t HK_CopyTable = {
     /*         inputMid        inputOffset     outputMid    outputOffset  numBytes*/
 
     /*   0 */ {
