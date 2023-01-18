@@ -37,6 +37,7 @@
  */
  #ifdef CFE_EDS_ENABLED_BUILD
  #include "hk_eds_typedefs.h"
+ typedef HK_CopyTableEntry_t hk_copy_table_entry_t;
  #else
 typedef struct
 {

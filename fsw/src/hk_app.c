@@ -224,7 +224,7 @@ int32 HK_TableInit(void)
 
     /* Register The HK Copy Table */
     Status = CFE_TBL_Register(&HK_AppData.CopyTableHandle, HK_COPY_TABLE_NAME,
-                              (sizeof(HK_CopyTableEntry_t) * HK_COPY_TABLE_ENTRIES),
+                              (sizeof(hk_copy_table_entry_t) * HK_COPY_TABLE_ENTRIES),
                               CFE_TBL_OPT_DBL_BUFFER | CFE_TBL_OPT_LOAD_DUMP, HK_ValidateHkCopyTable);
 
     if (Status != CFE_SUCCESS)

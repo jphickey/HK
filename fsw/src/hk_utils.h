@@ -103,7 +103,7 @@ int32 HK_ValidateHkCopyTable(void *TblPtr);
  * \retval #CFE_SUCCESS              \copydoc CFE_SUCCESS
  * \retval #HK_NULL_POINTER_DETECTED \copydoc HK_NULL_POINTER_DETECTED
  */
-int32 HK_ProcessNewCopyTable(HK_CopyTableEntry_t *CpyTblPtr, hk_runtime_tbl_entry_t *RtTblPtr);
+int32 HK_ProcessNewCopyTable(hk_copy_table_entry_t *CpyTblPtr, hk_runtime_tbl_entry_t *RtTblPtr);
 
 /**
  * \brief Tear Down Old Copy Table
@@ -122,7 +122,7 @@ int32 HK_ProcessNewCopyTable(HK_CopyTableEntry_t *CpyTblPtr, hk_runtime_tbl_entr
  * \retval #CFE_SUCCESS              \copydoc CFE_SUCCESS
  * \retval #HK_NULL_POINTER_DETECTED \copydoc HK_NULL_POINTER_DETECTED
  */
-int32 HK_TearDownOldCopyTable(HK_CopyTableEntry_t *CpyTblPtr, hk_runtime_tbl_entry_t *RtTblPtr);
+int32 HK_TearDownOldCopyTable(hk_copy_table_entry_t *CpyTblPtr, hk_runtime_tbl_entry_t *RtTblPtr);
 
 /**
  * \brief Send combined output message

@@ -64,7 +64,7 @@
         </ConstraintSet>
       </ContainerDataType>
 
-     <ContainerDataType name="CopyTableEntry" shortDescription="#copy_table_entry">
+     <ContainerDataType name="CopyTableEntry" shortDescription="#CopyTableEntry">
         <EntryList>
           <Entry name="InputMid" type="CFE_SB/MsgId" shortDescription="MsgId of the input packet" />
           <Entry name="InputOffset" type="BASE_TYPES/uint16" shortDescription="ByteOffset into the input pkt where copy will begin" />

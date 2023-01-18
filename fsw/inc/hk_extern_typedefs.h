@@ -26,6 +26,9 @@
 #ifndef HK_EXTERN_TYPEDEFS_H
 #define HK_EXTERN_TYPEDEFS_H
 
+#ifdef CFE_EDS_ENABLED_BUILD
+#include <hk_eds_typedefs.h>
+#else
 /**
  *  \brief Maximum Number of HK Copy Table Entries
  *
@@ -36,5 +39,6 @@
  *       The maximum size of this paramater is 8192
  */
 #define HK_COPY_TABLE_ENTRIES 128
+#endif
 
 #endif /* HK_EXTERN_TYPEDEFS_H */
