@@ -1,8 +1,8 @@
 /************************************************************************
- * NASA Docket No. GSC-18,919-1, and identified as “Core Flight
- * System (cFS) Housekeeping (HK) Application version 2.5.1”
+ * NASA Docket No. GSC-18,447-1, and identified as “CFS CFDP (CF)
+ * Application version 3.0.0”
  *
- * Copyright (c) 2021 United States Government as represented by the
+ * Copyright (c) 2019 United States Government as represented by the
  * Administrator of the National Aeronautics and Space Administration.
  * All Rights Reserved.
  *
@@ -19,10 +19,21 @@
 
 /**
  * @file
- *  The CFS Housekeeping (HK) Application platform configuration header file
+ *  The CFS Housekeeping (HK) Application Private Config Definitions
+ *
+ * This provides default values for configurable items that are internal
+ * to this module and do NOT affect the interface(s) of this module.  Changes
+ * to items in this file only affect the local module and will be transparent
+ * to external entities that are using the public interface(s).
+ *
+ * @note This file may be overridden/superceded by mission-provided defintions
+ * either by overriding this header or by generating definitions from a command/data
+ * dictionary tool.
  */
-#ifndef HK_PLATFORM_CFG_H
-#define HK_PLATFORM_CFG_H
+
+
+#ifndef HK_INTERNAL_CFG_H
+#define HK_INTERNAL_CFG_H
 
 /**
  * \defgroup cfshkplatformcfg CFS Housekeeping Platform Configuration

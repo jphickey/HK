@@ -19,12 +19,20 @@
 
 /**
  * @file
- *  The CFS Housekeeping (HK) Application header file
+ *  The CFS Housekeeping (HK) Application Message Structure Definition
+ *
+ * Provides default definitions for message structures
+ *
+ * @note This file may be overridden/superceded by mission-provided defintions
+ * either by overriding this header or by generating definitions from a command/data
+ * dictionary tool.
  */
-#ifndef HK_MSG_H
-#define HK_MSG_H
+#ifndef HK_MSG_STRUCTS_H
+#define HK_MSG_STRUCTS_H
 
-#include <cfe.h>
+#include "cfe_es_extern_typedefs.h"
+#include "cfe_sb_extern_typedefs.h"
+#include "cfe_msg_hdr.h"
 
 /**
  * \defgroup cfshkcmdstructs CFS Housekeeping Command Structures

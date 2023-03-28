@@ -19,7 +19,14 @@
 
 /**
  * @file
- *  The CFS Housekeeping (HK) Application header file
+ *  The CFS Housekeeping (HK) Application Table Structure Definition
+ *
+ * This is a compatibility header for the "hk_tbldefs.h" file that has
+ * traditionally provided the table definitions for cFS apps.
+ *
+ * @note This file may be overridden/superceded by mission-provided defintions
+ * either by overriding this header or by generating definitions from a command/data
+ * dictionary tool.
  */
 #ifndef HK_TBLDEFS_H
 #define HK_TBLDEFS_H
@@ -27,31 +34,7 @@
 /************************************************************************
 ** Includes
 *************************************************************************/
-#include <cfe.h>
-
-/*************************************************************************
-** Type definitions
-**************************************************************************/
-
-/**  \brief HK Copy Table Entry Format
- */
-
-typedef struct
-{
-    CFE_SB_MsgId_t InputMid;     /**< \brief MsgId of the input packet */
-    uint16         InputOffset;  /**< \brief ByteOffset into the input pkt where copy will begin */
-    CFE_SB_MsgId_t OutputMid;    /**< \brief MsgId of the output packet */
-    uint16         OutputOffset; /**< \brief ByteOffset into the output pkt where data will be placed */
-    uint16         NumBytes;     /**< \brief Number of data bytes to copy from input to output pkt */
-} hk_copy_table_entry_t;
-
-/**  \brief HK Run-time Table Entry Format
- */
-typedef struct
-{
-    CFE_SB_Buffer_t *OutputPktAddr;      /**< \brief Addr of output packet */
-    uint8            InputMidSubscribed; /**< \brief Indicates if input MID has been subscribed to */
-    uint8            DataPresent;        /**< \brief Indicates if the data associated with the entry is present */
-} hk_runtime_tbl_entry_t;
+#include "hk_mission_cfg.h"
+#include "hk_table_structs.h"
 
 #endif
