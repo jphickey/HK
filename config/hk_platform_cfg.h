@@ -19,26 +19,25 @@
 
 /**
  * @file
+ *  The CFS Housekeeping (HK) Application Config Definitions
  *
- * Declarations and prototypes for hk_extern_typedefs module
+ * This is a compatibility header for the "platform_cfg.h" file that has
+ * traditionally provided both public and private config definitions
+ * for each CFS app.
+ *
+ * These definitions are now provided in two separate files, one for
+ * the public/mission scope and one for internal scope.
+ *
+ * @note This file may be overridden/superceded by mission-provided defintions
+ * either by overriding this header or by generating definitions from a command/data
+ * dictionary tool.
  */
 
-#ifndef HK_EXTERN_TYPEDEFS_H
-#define HK_EXTERN_TYPEDEFS_H
 
-#ifdef CFE_EDS_ENABLED_BUILD
-#include <hk_eds_typedefs.h>
-#else
-/**
- *  \brief Maximum Number of HK Copy Table Entries
- *
- *  \par Description:
- *       Dictates the number of elements in the hk copy table.
- *
- *  \par Limits
- *       The maximum size of this paramater is 8192
- */
-#define HK_COPY_TABLE_ENTRIES 128
+#ifndef HK_PLATFORM_CFG_H
+#define HK_PLATFORM_CFG_H
+
+#include "hk_mission_cfg.h"
+#include "hk_internal_cfg.h"
+
 #endif
-
-#endif /* HK_EXTERN_TYPEDEFS_H */

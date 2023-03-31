@@ -34,6 +34,7 @@
 #include "hk_version.h"
 #include "hk_platform_cfg.h"
 #include "hk_utils.h"
+#include "hk_dispatch.h"
 #include <string.h>
 
 /************************************************************************
@@ -134,7 +135,8 @@ int32 HK_AppInit(void)
     HK_AppData.RunStatus = CFE_ES_RunStatus_APP_RUN;
 
     /* Initialize housekeeping packet  */
-    CFE_MSG_Init(CFE_MSG_PTR(HK_AppData.HkPacket), CFE_SB_ValueToMsgId(HK_HK_TLM_MID), sizeof(HK_HkPacket_t));
+    CFE_MSG_Init(CFE_MSG_PTR(HK_AppData.HkPacket.TelemetryHeader), CFE_SB_ValueToMsgId(HK_HK_TLM_MID),
+                 sizeof(HK_HkPacket_t));
 
     /* Register for event services...        */
     Status = CFE_EVS_Register(NULL, 0, CFE_EVS_EventFilter_BINARY);
@@ -302,96 +304,14 @@ int32 HK_TableInit(void)
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
-/* Process a command pipe message                                  */
-/*                                                                 */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void HK_AppPipe(const CFE_SB_Buffer_t *BufPtr)
-{
-    CFE_SB_MsgId_t    MessageID    = CFE_SB_INVALID_MSG_ID; /* Init to invalid value */
-    CFE_MSG_FcnCode_t CommandCode  = 0;
-    size_t            ActualLength = 0;
-
-    CFE_MSG_GetMsgId(&BufPtr->Msg, &MessageID);
-
-    CFE_MSG_GetSize(&BufPtr->Msg, &ActualLength);
-
-    switch (CFE_SB_MsgIdToValue(MessageID))
-    {
-        case HK_SEND_COMBINED_PKT_MID:
-            if (ActualLength != sizeof(HK_Send_Out_Msg_t))
-            {
-                CFE_EVS_SendEvent(HK_MSG_LEN_ERR_EID, CFE_EVS_EventType_ERROR,
-                                  "Msg with Bad length Rcvd: ID = 0x%08lX, Exp Len = %u, Len = %d",
-                                  (unsigned long)CFE_SB_MsgIdToValue(MessageID),
-                                  (unsigned int)sizeof(HK_Send_Out_Msg_t), (int)ActualLength);
-            }
-            else
-            {
-                HK_SendCombinedHKCmd(BufPtr);
-            }
-            break;
-
-        /* Request for HK's Housekeeping data...      */
-        case HK_SEND_HK_MID:
-            if (ActualLength != sizeof(HK_NoArgCmd_t))
-            {
-                CFE_EVS_SendEvent(HK_MSG_LEN_ERR_EID, CFE_EVS_EventType_ERROR,
-                                  "Msg with Bad length Rcvd: ID = 0x%08lX, Exp Len = %u, Len = %d",
-                                  (unsigned long)CFE_SB_MsgIdToValue(MessageID), (unsigned int)sizeof(HK_NoArgCmd_t),
-                                  (int)ActualLength);
-            }
-            else
-            {
-                /* Send out HK's housekeeping data */
-                HK_HousekeepingCmd((CFE_MSG_CommandHeader_t *)BufPtr);
-            }
-            /* Check for copy table load and runtime dump request */
-            if (HK_CheckStatusOfTables() != HK_SUCCESS)
-            {
-                HK_AppData.RunStatus = CFE_ES_RunStatus_APP_ERROR;
-            }
-            break;
-
-        /* HK ground commands   */
-        case HK_CMD_MID:
-
-            CFE_MSG_GetFcnCode(&BufPtr->Msg, &CommandCode);
-
-            switch (CommandCode)
-            {
-                case HK_NOOP_CC:
-                    HK_NoopCmd(BufPtr);
-                    break;
-
-                case HK_RESET_CC:
-                    HK_ResetCtrsCmd(BufPtr);
-                    break;
-
-                default:
-                    CFE_EVS_SendEvent(HK_CC_ERR_EID, CFE_EVS_EventType_ERROR,
-                                      "Cmd Msg with Invalid command code Rcvd -- ID = 0x%08lX, CC = %d",
-                                      (unsigned long)CFE_SB_MsgIdToValue(MessageID), CommandCode);
-                    HK_AppData.ErrCounter++;
-                    break;
-            }
-            break;
-
-        /* Incoming housekeeping data from other Subsystems...       */
-        default:
-
-            HK_ProcessIncomingHkData(BufPtr);
-            break;
-    }
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/*                                                                 */
 /* Send Combined Housekeeping Packet                               */
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void HK_SendCombinedHKCmd(const CFE_SB_Buffer_t *BufPtr)
+void HK_SendCombinedPktCmd(const CFE_SB_Buffer_t *BufPtr)
 {
-    HK_Send_Out_Msg_t *CmdPtr = (HK_Send_Out_Msg_t *)BufPtr;
+    const HK_SendCombinedPkt_Payload_t *CmdPtr;
+
+    CmdPtr = &((const HK_SendCombinedPktCmd_t *)BufPtr)->Payload;
 
     HK_SendCombinedHkPacket(CmdPtr->OutMsgToSend);
 }
@@ -401,18 +321,22 @@ void HK_SendCombinedHKCmd(const CFE_SB_Buffer_t *BufPtr)
 /* Housekeeping request                                            */
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void HK_HousekeepingCmd(const CFE_MSG_CommandHeader_t *Msg)
+void HK_SendHkCmd(const CFE_SB_Buffer_t *BufPtr)
 {
+    HK_HkTlm_Payload_t *PayloadPtr;
+
+    PayloadPtr = &HK_AppData.HkPacket.Payload;
+
     /* copy data into housekeeping packet */
-    HK_AppData.HkPacket.CmdCounter          = HK_AppData.CmdCounter;
-    HK_AppData.HkPacket.ErrCounter          = HK_AppData.ErrCounter;
-    HK_AppData.HkPacket.MissingDataCtr      = HK_AppData.MissingDataCtr;
-    HK_AppData.HkPacket.CombinedPacketsSent = HK_AppData.CombinedPacketsSent;
-    HK_AppData.HkPacket.MemPoolHandle       = HK_AppData.MemPoolHandle;
+    PayloadPtr->CmdCounter          = HK_AppData.CmdCounter;
+    PayloadPtr->ErrCounter          = HK_AppData.ErrCounter;
+    PayloadPtr->MissingDataCtr      = HK_AppData.MissingDataCtr;
+    PayloadPtr->CombinedPacketsSent = HK_AppData.CombinedPacketsSent;
+    PayloadPtr->MemPoolHandle       = HK_AppData.MemPoolHandle;
 
     /* Send housekeeping telemetry packet...        */
-    CFE_SB_TimeStampMsg(CFE_MSG_PTR(HK_AppData.HkPacket));
-    CFE_SB_TransmitMsg(CFE_MSG_PTR(HK_AppData.HkPacket), true);
+    CFE_SB_TimeStampMsg(CFE_MSG_PTR(HK_AppData.HkPacket.TelemetryHeader));
+    CFE_SB_TransmitMsg(CFE_MSG_PTR(HK_AppData.HkPacket.TelemetryHeader), true);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -422,19 +346,10 @@ void HK_HousekeepingCmd(const CFE_MSG_CommandHeader_t *Msg)
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void HK_NoopCmd(const CFE_SB_Buffer_t *BufPtr)
 {
-    size_t ExpectedLength = sizeof(HK_NoArgCmd_t);
+    CFE_EVS_SendEvent(HK_NOOP_CMD_EID, CFE_EVS_EventType_INFORMATION, "HK No-op command, Version %d.%d.%d.%d",
+                      HK_MAJOR_VERSION, HK_MINOR_VERSION, HK_REVISION, HK_MISSION_REV);
 
-    if (HK_VerifyCmdLength(BufPtr, ExpectedLength) == HK_BAD_MSG_LENGTH_RC)
-    {
-        HK_AppData.ErrCounter++;
-    }
-    else
-    {
-        CFE_EVS_SendEvent(HK_NOOP_CMD_EID, CFE_EVS_EventType_INFORMATION, "HK No-op command, Version %d.%d.%d.%d",
-                          HK_MAJOR_VERSION, HK_MINOR_VERSION, HK_REVISION, HK_MISSION_REV);
-
-        HK_AppData.CmdCounter++;
-    }
+    HK_AppData.CmdCounter++;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -442,19 +357,10 @@ void HK_NoopCmd(const CFE_SB_Buffer_t *BufPtr)
 /* Reset counters command                                          */
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void HK_ResetCtrsCmd(const CFE_SB_Buffer_t *BufPtr)
+void HK_ResetCountersCmd(const CFE_SB_Buffer_t *BufPtr)
 {
-    size_t ExpectedLength = sizeof(HK_NoArgCmd_t);
-
-    if (HK_VerifyCmdLength(BufPtr, ExpectedLength) == HK_BAD_MSG_LENGTH_RC)
-    {
-        HK_AppData.ErrCounter++;
-    }
-    else
-    {
-        HK_ResetHkData();
-        CFE_EVS_SendEvent(HK_RESET_CNTRS_CMD_EID, CFE_EVS_EventType_DEBUG, "HK Reset Counters command received");
-    }
+    HK_ResetHkData();
+    CFE_EVS_SendEvent(HK_RESET_CNTRS_CMD_EID, CFE_EVS_EventType_DEBUG, "HK Reset Counters command received");
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

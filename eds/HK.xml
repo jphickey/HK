@@ -36,17 +36,20 @@
       <ContainerDataType name="CMD" baseType="CFE_HDR/CommandHeader">
       </ContainerDataType>
 
+      <ContainerDataType name="SendHkCmd" baseType="CFE_HDR/CommandHeader">
+      </ContainerDataType>
+
        <ContainerDataType name="HkTlm_Payload" shortDescription="HK housekeeping">
         <EntryList>
           <Entry name="CmdCounter" type="BASE_TYPES/uint8" shortDescription="Count of valid commands received" />
           <Entry name="ErrCounter" type="BASE_TYPES/uint8" shortDescription="Count of invalid commands received" />
-          <Entry name="CombinedPacketsSent" type="BASE_TYPES/uint8" shortDescription="Count of combined tlm pkts sent" />
-          <Entry name="MissingDataCtr" type="BASE_TYPES/uint8" shortDescription="Number of times missing data was detected" />
-          <Entry name="MemPoolHandle" type="BASE_TYPES/uint8" shortDescription="Memory pool handle used to get mempool diags" />
+          <Entry name="CombinedPacketsSent" type="BASE_TYPES/uint16" shortDescription="Count of combined tlm pkts sent" />
+          <Entry name="MissingDataCtr" type="BASE_TYPES/uint16" shortDescription="Number of times missing data was detected" />
+          <Entry name="MemPoolHandle" type="CFE_ES/MemHandle" shortDescription="Memory pool handle used to get mempool diags" />
         </EntryList>
       </ContainerDataType>
 
-      <ContainerDataType name="HousekeepingPkt" baseType="CFE_HDR/TelemetryHeader">
+      <ContainerDataType name="HkPacket" baseType="CFE_HDR/TelemetryHeader">
         <EntryList>
           <Entry type="HkTlm_Payload" name="Payload" />
         </EntryList>
@@ -58,7 +61,7 @@
         </ConstraintSet>
       </ContainerDataType>
 
-      <ContainerDataType name="ResetCtrsCmd" baseType="CMD">
+      <ContainerDataType name="ResetCountersCmd" baseType="CMD">
         <ConstraintSet>
           <ValueConstraint entry="Sec.FunctionCode" value="1" />
         </ConstraintSet>
@@ -108,18 +111,13 @@
       </ArrayDataType>
       -->
 
-      <ContainerDataType name="NoArgCmd_Payload" shortDescription="No-Operation command packet structure">
-      </ContainerDataType>
-
       <ContainerDataType name="SendCombinedPkt_Payload" shortDescription="SEND_COMBINED_PKT Request">
         <EntryList>
-          <Entry name="MessageId" type="BASE_TYPES/uint16" shortDescription="MessageId to send" />
+          <Entry name="OutMsgToSend" type="CFE_SB/MsgId" shortDescription="MessageId to send" />
         </EntryList>
       </ContainerDataType>
 
-      <ContainerDataType name="HousekeepingCmd" baseType="CFE_HDR/CommandHeader" shortDescription="Send Housekeeping command" />
-
-      <ContainerDataType name="SendCombinedPkt" baseType="CMD">
+      <ContainerDataType name="SendCombinedPktCmd" baseType="CFE_HDR/CommandHeader">
         <EntryList>
           <Entry type="SendCombinedPkt_Payload" name="Payload" />
         </EntryList>
@@ -138,18 +136,18 @@
           <Interface name="SEND_HK" shortDescription="Send telemetry command interface" type="CFE_SB/Telecommand">
             <!-- This uses a bare spacepacket with no payload -->
             <GenericTypeMapSet>
-              <GenericTypeMap name="TelecommandDataType" type="HousekeepingCmd" />
+              <GenericTypeMap name="TelecommandDataType" type="SendHkCmd" />
             </GenericTypeMapSet>
           </Interface>
           <Interface name="SEND_COMBINED_PKT" shortDescription="Send combined telemetry packets command interface" type="CFE_SB/Telecommand">
             <!-- This uses a bare spacepacket with no payload -->
             <GenericTypeMapSet>
-              <GenericTypeMap name="TelecommandDataType" type="SendCombinedPkt" />
+              <GenericTypeMap name="TelecommandDataType" type="SendCombinedPktCmd" />
             </GenericTypeMapSet>
           </Interface>
           <Interface name="HK_TLM" shortDescription="Software bus housekeeping telemetry interface" type="CFE_SB/Telemetry">
             <GenericTypeMapSet>
-              <GenericTypeMap name="TelemetryDataType" type="HousekeepingPkt" />
+              <GenericTypeMap name="TelemetryDataType" type="HkPacket" />
             </GenericTypeMapSet>
           </Interface>
           <Interface name="HK_COMBINED_PKT1_TLM" shortDescription="Software bus housekeeping telemetry interface" type="CFE_SB/Telemetry">

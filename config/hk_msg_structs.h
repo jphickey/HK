@@ -19,12 +19,26 @@
 
 /**
  * @file
- *  The CFS Housekeeping (HK) Application header file
+ *  The CFS Housekeeping (HK) Application Message Structure Definition
+ *
+ * Provides default definitions for message structures
+ *
+ * @note This file may be overridden/superceded by mission-provided defintions
+ * either by overriding this header or by generating definitions from a command/data
+ * dictionary tool.
  */
-#ifndef HK_MSG_H
-#define HK_MSG_H
+#ifndef HK_MSG_STRUCTS_H
+#define HK_MSG_STRUCTS_H
 
-#include <cfe.h>
+#include "cfe_es_extern_typedefs.h"
+#include "cfe_sb_extern_typedefs.h"
+#include "cfe_msg_hdr.h"
+
+#ifdef CFE_EDS_ENABLED_BUILD
+
+#include "hk_eds_typedefs.h"
+
+#else
 
 /**
  * \defgroup cfshkcmdstructs CFS Housekeeping Command Structures
@@ -32,27 +46,53 @@
  */
 
 /**
- *  \brief Send Combined Output Message Command
+ *  \brief Send Combined Output Payload
  *
  *  This structure contains the format of the command used to inform HK to send
  *  the specified combined output message
  */
 typedef struct
 {
-    CFE_MSG_CommandHeader_t Hdr; /**< \brief Command Message Header */
-
     CFE_SB_MsgId_t OutMsgToSend; /**< \brief MsgId of combined tlm pkt to send  */
-} HK_Send_Out_Msg_t;
+} HK_SendCombinedPkt_Payload_t;
+
+/**
+ *  \brief Send Combined Output Message Command
+ */
+typedef struct
+{
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command Message Header */
+
+    HK_SendCombinedPkt_Payload_t Payload;
+} HK_SendCombinedPktCmd_t;
+
+/**
+ *  \brief Send HK command packet structure
+ */
+typedef struct
+{
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command Message Header */
+} HK_SendHkCmd_t;
 
 /**
  *  \brief No-Operation command packet structure
  *
- *  For command details see #HK_NOOP_CC, #HK_RESET_CC
+ *  For command details see #HK_NOOP_CC
  */
 typedef struct
 {
-    CFE_MSG_CommandHeader_t CmdHeader; /**< \brief Command Message Header */
-} HK_NoArgCmd_t;
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command Message Header */
+} HK_NoopCmd_t;
+
+/**
+ *  \brief No-Operation command packet structure
+ *
+ *  For command details see #HK_RESET_COUNTERS_CC
+ */
+typedef struct
+{
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command Message Header */
+} HK_ResetCountersCmd_t;
 
 /**\}*/
 
@@ -62,20 +102,30 @@ typedef struct
  */
 
 /**
- *  \brief HK Application housekeeping Packet
+ *  \brief HK Application housekeeping Payload
  */
 typedef struct
 {
-    CFE_MSG_TelemetryHeader_t TlmHeader; /**< \brief Telemetry Message Header */
-
     uint8              CmdCounter;          /**< \brief Count of valid commands received */
     uint8              ErrCounter;          /**< \brief Count of invalid commands received */
     uint16             Padding;             /**< \brief Padding to force 32 bit alignment */
     uint16             CombinedPacketsSent; /**< \brief Count of combined tlm pkts sent */
     uint16             MissingDataCtr;      /**< \brief Number of times missing data was detected */
     CFE_ES_MemHandle_t MemPoolHandle;       /**< \brief Memory pool handle used to get mempool diags */
+} HK_HkTlm_Payload_t;
+
+/**
+ *  \brief HK Application housekeeping Packet
+ */
+typedef struct
+{
+    CFE_MSG_TelemetryHeader_t TelemetryHeader; /**< \brief Telemetry Message Header */
+
+    HK_HkTlm_Payload_t Payload;
 } HK_HkPacket_t;
 
 /**\}*/
+
+#endif
 
 #endif

@@ -19,7 +19,8 @@
 
 /**
  * @file
- *  The CFS Housekeeping (HK) Application header file
+ *  The CFS Housekeeping (HK) Application function codes
+ *
  */
 #ifndef HK_MSGDEFS_H
 #define HK_MSGDEFS_H
@@ -44,7 +45,7 @@
  *  \par Command Verification
  *       Successful execution of this command may be verified with the
  *       following telemetry:
- *       - #HK_HkPacket_t.CmdCounter will increment
+ *       - #HK_HkTlm_Payload_t.CmdCounter will increment
  *       - The #HK_NOOP_CMD_EID informational event message will be generated
  *
  *  \par Error Conditions
@@ -70,7 +71,7 @@
  *  \par Command Verification
  *       Successful execution of this command may be verified with the
  *       following telemetry:
- *       - #HK_HkPacket_t.CmdCounter will be reset
+ *       - #HK_HkTlm_Payload_t.CmdCounter will be reset
  *       - The #HK_RESET_CNTRS_CMD_EID informational event message will
  *         be generated
  *
@@ -86,7 +87,7 @@
  *       to be designed such that they react to changes in the counter
  *       values that are reset by this command.
  */
-#define HK_RESET_CC 1
+#define HK_RESET_COUNTERS_CC 1
 
 /**\}*/
 
