@@ -19,7 +19,8 @@
 
 /**
  * @file
- *  The CFS Housekeeping (HK) Application header file
+ *  The CFS Housekeeping (HK) Application function codes
+ *
  */
 #ifndef HK_MSGDEFS_H
 #define HK_MSGDEFS_H

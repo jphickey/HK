@@ -27,7 +27,7 @@
 *************************************************************************/
 #include "cfe.h"
 #include "cfe_msgids.h"
-#include "hk_extern_typedefs.h"
+#include "hk_mission_cfg.h"
 #include "hk_msgids.h"
 #include "hk_tbldefs.h"
 #include "cfe_tbl_filedef.h"

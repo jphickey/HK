@@ -33,7 +33,6 @@
 #include "hk_msg.h"
 #include "hk_utils.h"
 #include "hk_platform_cfg.h"
-#include "hk_extern_typedefs.h"
 
 /*************************************************************************
  * Macro definitions
