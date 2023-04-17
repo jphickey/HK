@@ -335,9 +335,10 @@ void Test_HK_AppInit_SBCreatePipeFail(void)
     int32 ReturnValue;
     int32 strCmpResult;
     char  ExpectedEventString[CFE_MISSION_EVS_MAX_MESSAGE_LENGTH];
+    int32 ForcedReturnVal = -1;
+
     snprintf(ExpectedEventString, CFE_MISSION_EVS_MAX_MESSAGE_LENGTH, "Error Creating SB Pipe,RC=0x%%08X");
 
-    int32 ForcedReturnVal = -1;
     UT_SetDefaultReturnValue(UT_KEY(CFE_SB_CreatePipe), ForcedReturnVal);
 
     /* Act */
@@ -370,10 +371,11 @@ void Test_HK_AppInit_SBSubscribe1Fail(void)
     int32 ReturnValue;
     int32 strCmpResult;
     char  ExpectedEventString[CFE_MISSION_EVS_MAX_MESSAGE_LENGTH];
+    int32 ForcedReturnVal = -1;
+
     snprintf(ExpectedEventString, CFE_MISSION_EVS_MAX_MESSAGE_LENGTH,
              "Error Subscribing to HK Snd Cmb Pkt, MID=0x%%08X, RC=0x%%08X");
 
-    int32 ForcedReturnVal = -1;
     UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 1, ForcedReturnVal);
 
     /* Act */
@@ -406,10 +408,11 @@ void Test_HK_AppInit_SBSubscribe2Fail(void)
     int32 ReturnValue;
     int32 strCmpResult;
     char  ExpectedEventString[CFE_MISSION_EVS_MAX_MESSAGE_LENGTH];
+    int32 ForcedReturnVal = -1;
+
     snprintf(ExpectedEventString, CFE_MISSION_EVS_MAX_MESSAGE_LENGTH,
              "Error Subscribing to HK Request, MID=0x%%08X, RC=0x%%08X");
 
-    int32 ForcedReturnVal = -1;
     UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 2, ForcedReturnVal);
 
     /* Act */
@@ -442,10 +445,11 @@ void Test_HK_AppInit_SBSubscribe3Fail(void)
     int32 ReturnValue;
     int32 strCmpResult;
     char  ExpectedEventString[CFE_MISSION_EVS_MAX_MESSAGE_LENGTH];
+    int32 ForcedReturnVal = -1;
+
     snprintf(ExpectedEventString, CFE_MISSION_EVS_MAX_MESSAGE_LENGTH,
              "Error Subscribing to HK Gnd Cmds, MID=0x%%08X, RC=0x%%08X");
 
-    int32 ForcedReturnVal = -1;
     UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 3, ForcedReturnVal);
 
     /* Act */
@@ -478,9 +482,10 @@ void Test_HK_AppInit_PoolCreateFail(void)
     int32 ReturnValue;
     int32 strCmpResult;
     char  ExpectedEventString[CFE_MISSION_EVS_MAX_MESSAGE_LENGTH];
+    int32 ForcedReturnVal = -1;
+
     snprintf(ExpectedEventString, CFE_MISSION_EVS_MAX_MESSAGE_LENGTH, "Error Creating Memory Pool,RC=0x%%08X");
 
-    int32 ForcedReturnVal = -1;
     UT_SetDefaultReturnValue(UT_KEY(CFE_ES_PoolCreate), ForcedReturnVal);
 
     /* Act */
@@ -917,7 +922,7 @@ void Test_HK_SendCombinedPktCmd(void)
 void Test_HK_SendHkCmd(void)
 {
     /* Arrange */
-    CFE_SB_Buffer_t     DummyMsg;
+    CFE_SB_Buffer_t     Msg;
     uint8               call_count_CFE_SB_TimeStampMsg;
     uint8               call_count_CFE_SB_TransmitMsg;
     HK_HkTlm_Payload_t *PayloadPtr;
@@ -929,10 +934,10 @@ void Test_HK_SendHkCmd(void)
     HK_AppData.CombinedPacketsSent = 4;
     HK_AppData.MemPoolHandle       = HK_UT_MEMPOOL_1;
 
-    memset(&DummyMsg, 0, sizeof(DummyMsg));
+    memset(&Msg, 0, sizeof(Msg));
 
     /* Act */
-    HK_SendHkCmd(&DummyMsg);
+    HK_SendHkCmd(&Msg);
 
     call_count_CFE_SB_TimeStampMsg = UT_GetStubCount(UT_KEY(CFE_SB_TimeStampMsg));
     call_count_CFE_SB_TransmitMsg  = UT_GetStubCount(UT_KEY(CFE_SB_TransmitMsg));
@@ -965,13 +970,13 @@ void Test_HK_SendHkCmd(void)
 void Test_HK_NoopCmd(void)
 {
     /* Arrange */
-    CFE_SB_Buffer_t DummyBuf;
+    CFE_SB_Buffer_t Buf;
     int32           strCmpResult;
     char            ExpectedEventString[CFE_MISSION_EVS_MAX_MESSAGE_LENGTH];
     snprintf(ExpectedEventString, CFE_MISSION_EVS_MAX_MESSAGE_LENGTH, "HK No-op command, Version %%d.%%d.%%d.%%d");
 
     /* Act */
-    HK_NoopCmd(&DummyBuf);
+    HK_NoopCmd(&Buf);
 
     call_count_CFE_EVS_SendEvent = UT_GetStubCount(UT_KEY(CFE_EVS_SendEvent));
 
@@ -1005,14 +1010,14 @@ void Test_HK_NoopCmd(void)
 void Test_HK_ResetCountersCmd(void)
 {
     /* Arrange */
-    CFE_SB_Buffer_t DummyBuf;
+    CFE_SB_Buffer_t Buf;
 
     int32 strCmpResult;
     char  ExpectedEventString[CFE_MISSION_EVS_MAX_MESSAGE_LENGTH];
     snprintf(ExpectedEventString, CFE_MISSION_EVS_MAX_MESSAGE_LENGTH, "HK Reset Counters command received");
 
     /* Act */
-    HK_ResetCountersCmd(&DummyBuf);
+    HK_ResetCountersCmd(&Buf);
 
     call_count_CFE_EVS_SendEvent = UT_GetStubCount(UT_KEY(CFE_EVS_SendEvent));
 
