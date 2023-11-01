@@ -177,7 +177,7 @@
             <Variable type="BASE_TYPES/uint16" readOnly="true" name="SendHkTopicId" initialValue="${CFE_MISSION/HK_SEND_HK_TOPICID}" />
             <Variable type="BASE_TYPES/uint16" readOnly="true" name="SendCombinedPktTopicID" initialValue="${CFE_MISSION/HK_SEND_COMBINED_PKT_TOPICID}" />
             <Variable type="BASE_TYPES/uint16" readOnly="true" name="HkTlmTopicId" initialValue="${CFE_MISSION/HK_HK_TLM_TOPICID}" />
-            <Variable type="BASE_TYPES/uint16" readOnly="true" name="CombinedPkt1TlmTopicId" initialValue="${CFE_MISSION/HK_COMBINED_PKT1_TLM_TOPICID)}" />
+            <Variable type="BASE_TYPES/uint16" readOnly="true" name="CombinedPkt1TlmTopicId" initialValue="${CFE_MISSION/HK_COMBINED_PKT1_TLM_TOPICID}" />
             <Variable type="BASE_TYPES/uint16" readOnly="true" name="CombinedPkt2TlmTopicId" initialValue="${CFE_MISSION/HK_COMBINED_PKT2_TLM_TOPICID}" />
             <Variable type="BASE_TYPES/uint16" readOnly="true" name="CombinedPkt3TlmTopicId" initialValue="${CFE_MISSION/HK_COMBINED_PKT3_TLM_TOPICID}" />
             <Variable type="BASE_TYPES/uint16" readOnly="true" name="CombinedPkt4TlmTopicId" initialValue="${CFE_MISSION/HK_COMBINED_PKT4_TLM_TOPICID}" />
